@@ -1,5 +1,6 @@
 package com.api.creditomanager.controllers;
 
+import com.api.creditomanager.dtos.CreditoDTO;
 import com.api.creditomanager.entities.Credito;
 import com.api.creditomanager.services.CreditService;
 import com.api.creditomanager.services.KafkaProducerService;
@@ -30,4 +31,16 @@ public class CreditController {
         kafkaProducer.sendLog("Consulta realizada para listagem de todos os créditos");
         return ResponseEntity.ok(creditos);
     }
+
+    @GetMapping("/search/{numeroNfse}")
+    public ResponseEntity<List<CreditoDTO>> getByNumeroNfse(@PathVariable String numeroNfse) {
+        List<CreditoDTO> lista = creditService.findByNumeroNfse(numeroNfse);
+        kafkaProducer.sendLog("Consulta realizada para listagem de número NFS-e: " + numeroNfse);
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lista);
+    }
+
 }

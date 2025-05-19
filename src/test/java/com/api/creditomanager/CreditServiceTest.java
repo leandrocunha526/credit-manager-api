@@ -1,5 +1,6 @@
 package com.api.creditomanager;
 
+import com.api.creditomanager.dtos.CreditoDTO;
 import com.api.creditomanager.entities.Credito;
 import com.api.creditomanager.repositories.CreditRepository;
 import com.api.creditomanager.services.CreditService;
@@ -76,5 +77,19 @@ class CreditServiceTest {
         assertEquals(2, result.size());
         assertEquals(1L, result.get(0).getId());
         assertEquals(2L, result.get(1).getId());
+    }
+
+    @Test
+    void testFindByNumeroNfse() {
+        Credito credito = criarCreditoExemplo(1L);
+
+        when(creditRepository.findByNumeroNfse("NFSE-001")).thenReturn(List.of(credito));
+
+        List<CreditoDTO> result = creditService.findByNumeroNfse("NFSE-001");
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("123456", result.get(0).getNumeroCredito());
+        assertEquals("NFSE-001", result.get(0).getNumeroNfse());
     }
 }
